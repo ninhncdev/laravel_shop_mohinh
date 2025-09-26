@@ -29,7 +29,7 @@ class UpdateRequest extends FormRequest
             'email' => [
                 'required',
                 'email',
-                Rule::unique('users')->ignore($this->user->id),
+                Rule::unique('users', 'email')->ignore($this->route('user')?->id),
             ],
             'password' => 'nullable|string|min:6',
             'phone' => 'nullable|string',

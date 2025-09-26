@@ -33,7 +33,7 @@ class UserController extends Controller
         try {
             $data = $request->all();
             $data['password'] = Hash::make($data['password']);
-            $user = User::create($data);
+            User::create($data);
             return redirect()->route('users.index')->with('success', 'Tạo user thành công!');
         } catch (\Exception $exception) {
             Log::error($exception->getMessage());

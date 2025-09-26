@@ -19,11 +19,15 @@ class Product extends Model
     protected static function booted()
     {
         static::creating(function ($product) {
-            $product->slug = Str::slug($product->name);
+            $base = Str::slug($product->name);
+            $product->slug = static::uniqueSlug($base);
         });
 
         static::updating(function ($product) {
-            $product->slug = Str::slug($product->name);
+            if ($product->isDirty('name')) {
+                $base = Str::slug($product->name);
+                $product->slug = static::uniqueSlug($base, $product->id);
+            }
         });
     }
 
@@ -40,5 +44,18 @@ class Product extends Model
     public function variants()
     {
         return $this->hasMany(ProductVariant::class);
+    }
+
+    protected static function uniqueSlug(string $base, ?int $ignoreId = null): string
+    {
+        $slug = $base;
+        $i = 1;
+        while (static::where('slug', $slug)
+            ->when($ignoreId, fn($q) => $q->where('id', '!=', $ignoreId))
+            ->exists()) {
+            $slug = "{$base}-{$i}";
+            $i++;
+        }
+        return $slug;
     }
 }

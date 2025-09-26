@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\Product\StoreRequest;
+use App\Http\Requests\Product\UpdateRequest;
 use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Http\Request;
@@ -65,7 +66,7 @@ class ProductController extends Controller
                         'product_id' => $product->id,
                         'variant_name' => $variantData['variant_name'],
                         'price' => $variantData['price'],
-                        'sale_price' => $variantData['sale_price'],
+                        'sale_price' => $variantData['sale_price'] ?? null,
                         'sku' => generateSku('VAR'),
                         'stock' => $variantData['stock'],
                     ]);
@@ -112,7 +113,7 @@ class ProductController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Product $product)
+    public function update(UpdateRequest $request, Product $product)
     {
         try {
             $data = $request->all();
